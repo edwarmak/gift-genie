@@ -25,7 +25,7 @@ const messages = [
   {
     role: "system",
     content: `You are the Gift Genie!
-    Make your gift suggestions thoughtful and practical.
+    Make your gift suggestions thoughtful and practical.f
     Your response must be under 100 words. 
     Skip intros and conclusions. 
     Only output gift suggestions.`,
@@ -42,6 +42,26 @@ async function handleGiftRequest(e) {
 
   // Set loading state
   setLoading(true);
+
+  // Add user message to messages array
+  messages.push({
+    role: "user",
+    content: userPrompt
+  })
+
+  // Send chat completions request
+  const response = await openai.chat.completions.create({
+    model: process.env.AI_MODEL,
+    messages
+  })
+
+  console.log("response", response)
+
+  // Extract thhe assistant's response
+  const giftSuggestions = response.choices[0].message.content
+
+  // Render response on the page
+  outputContent.textContent = giftSuggestions
 
   // Clear loading state
   setLoading(false);
