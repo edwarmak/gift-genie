@@ -49,22 +49,28 @@ async function handleGiftRequest(e) {
     content: userPrompt
   })
 
-  // Send chat completions request
-  const response = await openai.chat.completions.create({
-    model: process.env.AI_MODEL,
-    messages
-  })
+  try {
+    // Send chat completions request
+    const response = await openai.chat.completions.create({
+      model: process.env.AI_MODEL,
+      messages
+    })
 
-  console.log("response", response)
+    // Extract thhe assistant's response
+    const giftSuggestions = response.choices[0].message.content
 
-  // Extract thhe assistant's response
-  const giftSuggestions = response.choices[0].message.content
+    // Render response on the page
+    outputContent.textContent = giftSuggestions
 
-  // Render response on the page
-  outputContent.textContent = giftSuggestions
-
-  // Clear loading state
-  setLoading(false);
+  } catch (error) {
+    console.error(error)
+    outputContent.textContent = 
+    "Sorry, I can't access what I need right now. Please try again"
+    
+  } finally {
+    // Clear loading state
+    setLoading(false);
+  }
 }
 
 start();
